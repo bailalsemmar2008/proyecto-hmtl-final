@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // He usado imágenes de Unsplash de temática urbana/música/arte.
     const imageList = [
         'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c9a27e0a-52f7-4cec-a932-b6246308a58e/dfg6451-bf8a1a80-3af1-4485-a22a-ce68c40fdc9f.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jOWEyN2UwYS01MmY3LTRjZWMtYTkzMi1iNjI0NjMwOGE1OGUvZGZnNjQ1MS1iZjhhMWE4MC0zYWYxLTQ0ODUtYTIyYS1jZTY4YzQwZmRjOWYuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.4GScQMOAjRf80dZnpzeuFH4cu0cqGf2NfRQjzndROEg', // IShowSpeed
-        'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop', // Graffiti
-        'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=600&auto=format&fit=crop', // Concierto
-        'https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?q=80&w=600&auto=format&fit=crop', // DJ
-        'https://images.unsplash.com/photo-1508973379184-7517410fb0bc?q=80&w=600&auto=format&fit=crop'  // Vinilos
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa6h11UfK0kutO4Y97kJ4iwb3yDjn1H-SNAA&s', // Manzana gato
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTulYq9zMObsZf-ZKa3PFvJUyw5NQcSicZQPQ&s', // TotЯ
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKpVo_NEQ875K0ZEpFNAlme6r780XGtT8Zg&s', // Eduardo
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbwOGolbycEAqRi2LSV_rL_0KslOpkukRpFQ&s'  // Freddy Sexy
     ];
     
     initPuzzle();
@@ -214,27 +214,54 @@ document.addEventListener('DOMContentLoaded', () => {
          });
      }
  
-     const audioPlayer = document.getElementById('audio-player');
-     let currentBtn = null;
- 
-     function togglePlay(e) {
-         const btn = e.target;
-         const url = btn.dataset.url;
- 
-         if (currentBtn === btn && !audioPlayer.paused) {
-             audioPlayer.pause();
-             btn.textContent = "▶";
-             btn.classList.remove('playing');
-         } else {
-             if (currentBtn) {
-                 currentBtn.textContent = "▶";
-                 currentBtn.classList.remove('playing');
-             }
-             audioPlayer.src = url;
-             audioPlayer.play();
-             btn.textContent = "II";
-             btn.classList.add('playing');
-             currentBtn = btn;
-         }
-     }
-});
+     // ... resto del código anterior ...
+
+    const audioPlayer = document.getElementById('audio-player');
+    let currentBtn = null;
+
+    // EVENTO EXTRA: Cuando la canción termina sola, reseteamos el botón
+    audioPlayer.addEventListener('ended', () => {
+        if (currentBtn) {
+            currentBtn.textContent = "▶";
+            currentBtn.classList.remove('playing');
+            currentBtn = null; // Reseteamos la selección
+        }
+    });
+
+    function togglePlay(e) {
+        const btn = e.target;
+        const url = btn.dataset.url;
+
+        // CASO 1: Hacemos click en la MISMA canción que ya estaba seleccionada
+        if (currentBtn === btn) {
+            if (audioPlayer.paused) {
+                // Si estaba pausada, REANUDAMOS (No cambiamos el src, así sigue donde estaba)
+                audioPlayer.play();
+                btn.textContent = "II"; // Icono de pausa
+                btn.classList.add('playing');
+            } else {
+                // Si estaba sonando, PAUSAMOS
+                audioPlayer.pause();
+                btn.textContent = "▶";
+                btn.classList.remove('playing');
+            }
+        } 
+        // CASO 2: Hacemos click en una canción DIFERENTE (o la primera vez)
+        else {
+            // Si había otra canción sonando o pausada, reseteamos su botón visualmente
+            if (currentBtn) {
+                currentBtn.textContent = "▶";
+                currentBtn.classList.remove('playing');
+            }
+            
+            // Aquí SÍ cambiamos la fuente porque es una canción nueva
+            audioPlayer.src = url;
+            audioPlayer.play();
+            
+            // Actualizamos el nuevo botón
+            btn.textContent = "II";
+            btn.classList.add('playing');
+            currentBtn = btn;
+        }
+    }
+}); // Fin del addEventListener DOMContentLoaded
