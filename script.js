@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxkrggw9rn6fAlFXP65XSVm5lTeeMl-5kmrQ&s', // La Falete Con Máscara
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-5oQiwIaJDM53rFmzFLUF6YDRjBt5SK-R1g&s', // El Rincon De Mario
         'https://m.media-amazon.com/images/I/51uHWNxp6AL._SX354_SY354_BL0_QL100__UXNaN_FMjpg_QL85_.jpg', //Jose Nogales
-        'https://images.genius.com/318a0bc7dfe22d4329f244e933fa0a2e.900x900x1.jpg' //La Ruth Empodera'
+        'https://images.genius.com/318a0bc7dfe22d4329f244e933fa0a2e.900x900x1.jpg', //La Ruth Empodera'
+        'https://i.ytimg.com/vi/nD_7YPIeyw8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDDIApb7uA-gD9NvY8hyMFwjN9u8g' //AlexGamer Capitán América
     ];
     
     initPuzzle();
@@ -192,10 +193,12 @@ document.addEventListener('DOMContentLoaded', () => {
          } catch (error) {
              console.warn("Usando respaldo.");
              songsData = [
-                 { title: "Rincón", artist: "Milo J", url: "https://files.catbox.moe/k2r8d1.mp3" }, 
-                 { title: "XO Tour Llif3", artist: "Lil Uzi Vert", url: "https://files.catbox.moe/k2r8d1.mp3" },
-                 { title: "Pelele", artist: "Morad", url: "https://files.catbox.moe/k2r8d1.mp3" },
-                 { title: "FE!N", artist: "Travis Scott", url: "https://files.catbox.moe/k2r8d1.mp3" }
+                 { title: "M.A.I", artist: "Milo J", url: "https://files.catbox.moe/nkv4ww.webm" }, 
+                 { title: "20 Min", artist: "Lil Uzi Vert", url: "https://files.catbox.moe/fh08je.mp3" },
+                 { title: "Lo Que Tiene", artist: "Morad, Beny Jr, Rvfv", url: "https://files.catbox.moe/ryiyu8.mp3" },
+                 { title: "goosebumps", artist: "Travis Scott", url: "https://files.catbox.moe/0chh19.mp3" },
+                 { title: "All The Stars", artist: "Kendrick Lamar, SZA", url: "https://files.catbox.moe/9ly72f.mp3" },
+                 { title: "See You Again", artist: "Tryler, The Creator", url: "https://files.catbox.moe/x3ecve.mp3" },
              ];
          }
  
