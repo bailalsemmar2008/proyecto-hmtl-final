@@ -8,8 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const size = 3; 
     let pieces = [];
 
-    // --- 1. LÓGICA DE MEMORIA (SISTEMA INFALIBLE) ---
-    const userHasAccess = localStorage.getItem('musicAccess');
+    // --- 1. LÓGICA CORREGIDA: USAR URL EN VEZ DE MEMORIA ---
+    // Esto hace que si recargas la página normal (F5), te salga el puzzle.
+    // Pero si vienes del Snake con el código especial, te deje pasar.
+    const urlParams = new URLSearchParams(window.location.search);
+    const isUnlocked = urlParams.get('unlocked');
 
     // --- LISTA DE IMÁGENES PERSONALIZADA ---
     const imageList = [ 
@@ -25,12 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
         'https://i.ytimg.com/vi/nD_7YPIeyw8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDDIApb7uA-gD9NvY8hyMFwjN9u8g' //AlexGamer Capitán América 
     ]; 
 
-    if (userHasAccess === 'true') {
-        // SI LA MEMORIA DICE QUE SÍ: Saltamos el puzzle
-        console.log("Acceso recuperado de memoria.");
+    if (isUnlocked === 'true') {
+        // Vienes del Snake -> Muestras canciones
+        console.log("Acceso concedido desde Snake.");
         unlockContent();
     } else {
-        // SI NO: Iniciamos el puzzle
+        // Entras normal -> Muestras puzzle
+        // LIMPIAMOS MEMORIA ANTIGUA POR SI ACASO
+        localStorage.removeItem('musicAccess');
         initPuzzle();
     }
 
@@ -46,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pieces = [];
         puzzleBoard.innerHTML = ''; 
 
-        // Elegir imagen al azar de TU nueva lista
+        // Elegir imagen al azar
         const randomIndex = Math.floor(Math.random() * imageList.length);
         const currentImageUrl = imageList[randomIndex];
 
@@ -78,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. LÓGICA DRAG & DROP (Misma de siempre) ---
+    // --- 3. LÓGICA DRAG & DROP ---
     let dragSrcEl = null;
 
     function addDragEvents(item) {
@@ -150,9 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMsg.textContent = "¡SISTEMA DESBLOQUEADO!";
             statusMsg.style.color = "#1db954";
             
-            // --- ¡AQUÍ GUARDAMOS EN MEMORIA! ---
-            localStorage.setItem('musicAccess', 'true');
-
+            // YA NO GUARDAMOS EN LOCALSTORAGE
+            // Simplemente mostramos el contenido
+            
             puzzleBoard.style.border = "2px solid #fff";
             puzzleBoard.style.boxShadow = "0 0 30px #1db954";
 
@@ -166,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadSongs() {
         const container = document.getElementById('player-container');
         
-        // --- AQUÍ ESTÁN TUS CANCIONES NUEVAS ---
         const songsData = [
             { title: "M.A.I", artist: "Milo J", url: "https://files.catbox.moe/nkv4ww.webm" },  
             { title: "20 Min", artist: "Lil Uzi Vert", url: "https://files.catbox.moe/fh08je.mp3" }, 
