@@ -2,89 +2,143 @@ document.addEventListener('DOMContentLoaded', () => {
     const puzzleBoard = document.getElementById('puzzle-board');
     const statusMsg = document.getElementById('status-msg');
     
-    // Configuración del Puzzle (3x3)
+    // CONFIGURACIÓN
     const size = 3; 
     let pieces = [];
     
-    // Inicializar Puzzle
     initPuzzle();
 
     function initPuzzle() {
-        // Crear las 9 piezas con su posición correcta
+        pieces = [];
+        puzzleBoard.innerHTML = ''; 
+
         for (let i = 0; i < size * size; i++) {
             pieces.push(i);
         }
 
-        // Barajar las piezas aleatoriamente
+        // Barajar
         pieces.sort(() => Math.random() - 0.5);
 
-        // Renderizar en el DOM
         pieces.forEach((val, index) => {
             const div = document.createElement('div');
             div.classList.add('puzzle-piece');
             div.setAttribute('draggable', 'true');
-            div.dataset.index = index; // Posición actual en el DOM
-            div.dataset.value = val;   // Valor real de la pieza (0 a 8)
+            div.dataset.index = index; 
+            div.dataset.value = val;   
 
-            // Calcular posición del background para que forme la imagen
-            // val % size = columna (x)
-            // Math.floor(val / size) = fila (y)
-            const x = (val % size) * 100;
-            const y = Math.floor(val / size) * 100;
-            div.style.backgroundPosition = `-${x}px -${y}px`;
+            // --- CORRECCIÓN MATEMÁTICA DEL CORTE ---
+            
+            // 1. Calculamos fila y columna de la parte de la imagen que queremos mostrar
+            const col = val % size;
+            const row = Math.floor(val / size);
+            
+            // 2. Calculamos el porcentaje exacto de posición
+            // Fórmula: (posición / (total_piezas - 1)) * 100
+            const xPercent = (col / (size - 1)) * 100;
+            const yPercent = (row / (size - 1)) * 100;
 
-            // Eventos Drag & Drop
+            div.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
+            
+            // 3. ¡IMPORTANTE! Forzamos el tamaño para que coincida con la cuadrícula
+            // Si es 3x3, la imagen debe ser un 300% del tamaño de la pieza
+            div.style.backgroundSize = `${size * 100}% ${size * 100}%`;
+
             addDragEvents(div);
             puzzleBoard.appendChild(div);
         });
     }
 
-    // Lógica Drag & Drop
+    // --- LÓGICA DRAG & DROP ROBUSTA ---
     let dragSrcEl = null;
 
     function addDragEvents(item) {
-        item.addEventListener('dragstart', function(e) {
-            dragSrcEl = this;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.innerHTML);
-            this.classList.add('dragging');
-        });
+        // PC
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragover', handleDragOver);
+        item.addEventListener('drop', handleDrop);
+        item.addEventListener('dragend', handleDragEnd);
 
-        item.addEventListener('dragend', function() {
-            this.classList.remove('dragging');
-        });
+        // MÓVIL (Touch)
+        item.addEventListener('touchstart', handleTouchStart, {passive: false});
+        item.addEventListener('touchmove', handleTouchMove, {passive: false});
+        item.addEventListener('touchend', handleTouchEnd);
+    }
 
-        item.addEventListener('dragover', function(e) {
-            if (e.preventDefault) e.preventDefault();
-            return false;
-        });
+    // Funciones PC
+    function handleDragStart(e) {
+        dragSrcEl = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+        this.classList.add('dragging');
+    }
 
-        item.addEventListener('dragenter', function() {
-            this.classList.add('over');
-        });
+    function handleDragOver(e) {
+        if (e.preventDefault) e.preventDefault();
+        return false;
+    }
 
-        item.addEventListener('dragleave', function() {
-            this.classList.remove('over');
-        });
+    function handleDrop(e) {
+        if (e.stopPropagation) e.stopPropagation();
+        if (dragSrcEl !== this) {
+            swapPieces(dragSrcEl, this);
+            checkWin();
+        }
+        return false;
+    }
 
-        item.addEventListener('drop', function(e) {
-            if (e.stopPropagation) e.stopPropagation();
+    function handleDragEnd(e) {
+        this.classList.remove('dragging');
+    }
 
-            if (dragSrcEl !== this) {
-                // Intercambiar estilos de fondo (la imagen visible)
-                const tempBg = this.style.backgroundPosition;
-                this.style.backgroundPosition = dragSrcEl.style.backgroundPosition;
-                dragSrcEl.style.backgroundPosition = tempBg;
+    // Funciones Móvil (CORREGIDAS)
+    let touchStartItem = null;
 
-                // Intercambiar valores de datos para lógica de ganar
-                const tempVal = this.dataset.value;
-                this.dataset.value = dragSrcEl.dataset.value;
-                dragSrcEl.dataset.value = tempVal;
+    function handleTouchStart(e) {
+        e.preventDefault(); 
+        touchStartItem = this;
+        this.classList.add('dragging');
+    }
 
-                checkWin();
-            }
-            return false;
-        });
+    function handleTouchMove(e) {
+        e.preventDefault();
+        // Aquí podrías mover un elemento fantasma si quisieras más efectos visuales
+    }
+
+    function handleTouchEnd(e) {
+        e.preventDefault();
+        this.classList.remove('dragging');
+        
+        const touch = e.changedTouches[0];
+        
+        // TRUCO: Ocultamos momentáneamente la pieza que soltamos
+        // para que 'elementFromPoint' detecte lo que hay DEBAJO
+        this.style.display = 'none';
+        
+        let targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+        
+        // Volvemos a mostrar la pieza inmediatamente
+        this.style.display = 'block';
+
+        // Buscamos si soltamos encima de una pieza válida
+        if (targetElement && !targetElement.classList.contains('puzzle-piece')) {
+            targetElement = targetElement.closest('.puzzle-piece');
+        }
+
+        if (targetElement && targetElement.classList.contains('puzzle-piece') && targetElement !== touchStartItem) {
+            swapPieces(touchStartItem, targetElement);
+            checkWin();
+        }
+    }
+
+    function swapPieces(item1, item2) {
+        // Intercambiamos solo los estilos visuales y los datos
+        const tempBgPos = item1.style.backgroundPosition;
+        item1.style.backgroundPosition = item2.style.backgroundPosition;
+        item2.style.backgroundPosition = tempBgPos;
+
+        const tempVal = item1.dataset.value;
+        item1.dataset.value = item2.dataset.value;
+        item2.dataset.value = tempVal;
     }
 
     function checkWin() {
@@ -92,49 +146,47 @@ document.addEventListener('DOMContentLoaded', () => {
         let isSolved = true;
 
         currentPieces.forEach((piece, index) => {
-            // Si el valor de la pieza no coincide con su índice, no está resuelto
             if (parseInt(piece.dataset.value) !== index) {
                 isSolved = false;
             }
         });
 
         if (isSolved) {
-            statusMsg.textContent = "¡CORRECTO! Accediendo a la base de datos...";
+            statusMsg.textContent = "¡SISTEMA DESBLOQUEADO!";
             statusMsg.style.color = "#1db954";
             
+            // Animación visual de éxito
+            puzzleBoard.style.border = "2px solid #fff";
+            puzzleBoard.style.boxShadow = "0 0 30px #1db954";
+
             setTimeout(() => {
                 document.getElementById('puzzle-wrapper').classList.add('hidden');
                 document.getElementById('reward-wrapper').classList.remove('hidden');
-                loadSongs(); // Cargar canciones
-            }, 1500);
+                loadSongs(); 
+            }, 1000);
         }
     }
 
-    // --- LÓGICA DEL REPRODUCTOR Y BASE DE DATOS ---
-
+    // --- REPRODUCTOR (Igual que antes) ---
     async function loadSongs() {
         const container = document.getElementById('player-container');
         let songsData = [];
 
         try {
-            // Intentar cargar desde el archivo JSON
             const response = await fetch('songs.json');
-            if (!response.ok) throw new Error("No se pudo cargar JSON local");
+            if (!response.ok) throw new Error("Error JSON");
             songsData = await response.json();
         } catch (error) {
-            console.warn("No se pudo leer songs.json (probablemente por CORS local). Usando datos de respaldo.");
-            // Datos de respaldo por si falla la carga local sin servidor
+            console.warn("Usando respaldo.");
             songsData = [
-                { title: "Rara Vez", artist: "Milo J, Taiu", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-                { title: "20 Min", artist: "Lil Uzi Vert", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-                { title: "Lo Que Tiene", artist: "Morad, Beny Jr, Rvfv", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-                { title: "goosebumps", artist: "Travis Scott", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
-                { title: "All The Stars", artist: "Kendrick Lamar, SZA", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
-                { title: "See You Again", artist: "Tyler, The Creator", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" }
+                { title: "Rincón", artist: "Milo J", url: "https://files.catbox.moe/k2r8d1.mp3" }, 
+                { title: "XO Tour Llif3", artist: "Lil Uzi Vert", url: "https://files.catbox.moe/k2r8d1.mp3" },
+                { title: "Pelele", artist: "Morad", url: "https://files.catbox.moe/k2r8d1.mp3" },
+                { title: "FE!N", artist: "Travis Scott", url: "https://files.catbox.moe/k2r8d1.mp3" }
             ];
         }
 
-        // Renderizar lista
+        container.innerHTML = '';
         songsData.forEach(song => {
             const div = document.createElement('div');
             div.classList.add('song-item');
@@ -148,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(div);
         });
 
-        // Añadir funcionalidad a los botones
         document.querySelectorAll('.play-btn').forEach(btn => {
             btn.addEventListener('click', togglePlay);
         });
@@ -161,22 +212,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = e.target;
         const url = btn.dataset.url;
 
-        // Si pulsamos el mismo botón que ya suena
         if (currentBtn === btn && !audioPlayer.paused) {
             audioPlayer.pause();
             btn.textContent = "▶";
             btn.classList.remove('playing');
         } else {
-            // Si pulsamos otro botón, resetear el anterior
             if (currentBtn) {
                 currentBtn.textContent = "▶";
                 currentBtn.classList.remove('playing');
             }
-            
-            // Reproducir nuevo
             audioPlayer.src = url;
             audioPlayer.play();
-            btn.textContent = "II"; // Símbolo de pausa
+            btn.textContent = "II";
             btn.classList.add('playing');
             currentBtn = btn;
         }

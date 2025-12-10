@@ -1,8 +1,12 @@
 :root {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
-    --accent: #1db954; /* Verde tipo Spotify */
+    --accent: #1db954;
     --text: #ffffff;
+}
+
+* {
+    box-sizing: border-box; /* Importante para que los bordes no rompan el tamaño */
 }
 
 body {
@@ -14,100 +18,135 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    padding: 20px; /* Espacio alrededor en móviles */
 }
 
 .container {
     text-align: center;
-    max-width: 600px;
     width: 100%;
-    padding: 20px;
+    max-width: 500px; /* Ancho máximo en escritorio */
+    background-color: var(--card-bg); /* Fondo de tarjeta para mejor contraste */
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .hidden {
     display: none !important;
 }
 
-/* ESTILOS DEL PUZZLE */
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+}
+
+p {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ESTILOS DEL PUZZLE RESPONSIVE */
+/* ... Mantenemos el resto del CSS igual (body, container, etc) ... */
+
+/* CAMBIOS EN EL PUZZLE */
 #puzzle-board {
-    width: 300px;
-    height: 300px;
-    margin: 20px auto;
-    display: flex;
-    flex-wrap: wrap;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1 / 1; /* Fuerza a que sea cuadrado */
+    margin: 0 auto 20px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     border: 2px solid var(--accent);
-    box-shadow: 0 0 15px rgba(29, 185, 84, 0.3);
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.2);
+    background-color: #000;
+    gap: 1px; /* Opcional: crea una línea finita entre piezas para que se vea mejor */
 }
 
 .puzzle-piece {
-    width: 100px;
-    height: 100px;
-    background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c9a27e0a-52f7-4cec-a932-b6246308a58e/dfg6451-bf8a1a80-3af1-4485-a22a-ce68c40fdc9f.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jOWEyN2UwYS01MmY3LTRjZWMtYTkzMi1iNjI0NjMwOGE1OGUvZGZnNjQ1MS1iZjhhMWE4MC0zYWYxLTQ0ODUtYTIyYS1jZTY4YzQwZmRjOWYuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.4GScQMOAjRf80dZnpzeuFH4cu0cqGf2NfRQjzndROEg'); /* Imagen de ejemplo */
-    background-size: 300px 300px;
+    width: 100%;
+    height: 100%;
+    /* Pon aquí tu imagen cuadrada preferiblemente */
+    background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop'); 
+    background-repeat: no-repeat;
     cursor: grab;
-    border: 1px solid #000;
-    box-sizing: border-box;
+    position: relative;
+    touch-action: none;
+    overflow: hidden; /* Evita que la imagen se salga si hay errores de redondeo */
 }
 
+/* Cuando arrastramos, que se vea claro y por encima de todo */
 .puzzle-piece.dragging {
-    opacity: 0.5;
+    opacity: 0.6;
+    border: 2px solid var(--accent);
+    z-index: 100; 
+    transform: scale(0.95); /* Efecto visual de "levantar" la pieza */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
 }
 
 /* ESTILOS DEL REPRODUCTOR */
 #player-container {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    background-color: #252525;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .song-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
+    padding: 12px 15px;
     border-bottom: 1px solid #333;
-    transition: background 0.3s;
-}
-
-.song-item:hover {
-    background-color: #2a2a2a;
 }
 
 .song-info {
     text-align: left;
+    overflow: hidden; 
+    margin-right: 10px;
 }
 
 .song-title {
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1rem;
     display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Puntos suspensivos si el texto es muy largo */
 }
 
 .song-artist {
-    font-size: 0.9em;
-    color: #b3b3b3;
+    font-size: 0.8em;
+    color: #999;
 }
 
 .play-btn {
     background-color: var(--accent);
     border: none;
     color: black;
-    width: 40px;
-    height: 40px;
+    min-width: 35px; /* Tamaño mínimo para dedos */
+    height: 35px;
     border-radius: 50%;
     cursor: pointer;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
+    font-size: 12px;
 }
 
-.play-btn:hover {
-    transform: scale(1.1);
-}
+/* MEDIA QUERIES PARA MÓVILES */
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem 1rem;
+    }
+    
+    h1 {
+        font-size: 1.25rem;
+    }
 
-.playing {
-    background-color: #ff4444; /* Rojo para Stop */
-    color: white;
+    .song-title {
+        font-size: 0.9rem;
+    }
 }
