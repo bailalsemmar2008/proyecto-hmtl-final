@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Challenge</title>
+    <link rel="stylesheet" href="snake.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="header">
+            <h2>SNAKE ZONE</h2>
+            <div class="score-board">Puntos: <span id="score">0</span> / 5</div>
+        </div>
+
+        <canvas id="gameCanvas" width="300" height="300"></canvas>
+
+        <div class="controls">
+            <button id="up-btn">▲</button>
+            <div class="horizontal-controls">
+                <button id="left-btn">◀</button>
+                <button id="right-btn">▶</button>
+            </div>
+            <button id="down-btn">▼</button>
+        </div>
+
+        <div id="win-screen" class="hidden">
+            <h1 class="glow-text">¡FELICIDADES!</h1>
+            <p>Has demostrado tu habilidad.</p>
+            <a href="index.html" class="back-btn">Volver a la Música 🎵</a>
+            <button onclick="location.reload()" class="retry-btn">Jugar otra vez</button>
+        </div>
+    </div>
+
+    <script src="snake.js"></script>
+</body>
+</html>
