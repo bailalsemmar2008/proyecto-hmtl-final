@@ -1,0 +1,113 @@
+:root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --accent: #1db954; /* Verde tipo Spotify */
+    --text: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ESTILOS DEL PUZZLE */
+#puzzle-board {
+    width: 300px;
+    height: 300px;
+    margin: 20px auto;
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.3);
+}
+
+.puzzle-piece {
+    width: 100px;
+    height: 100px;
+    background-image: url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=300&auto=format&fit=crop'); /* Imagen de ejemplo */
+    background-size: 300px 300px;
+    cursor: grab;
+    border: 1px solid #000;
+    box-sizing: border-box;
+}
+
+.puzzle-piece.dragging {
+    opacity: 0.5;
+}
+
+/* ESTILOS DEL REPRODUCTOR */
+#player-container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.song-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    transition: background 0.3s;
+}
+
+.song-item:hover {
+    background-color: #2a2a2a;
+}
+
+.song-info {
+    text-align: left;
+}
+
+.song-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    display: block;
+}
+
+.song-artist {
+    font-size: 0.9em;
+    color: #b3b3b3;
+}
+
+.play-btn {
+    background-color: var(--accent);
+    border: none;
+    color: black;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.play-btn:hover {
+    transform: scale(1.1);
+}
+
+.playing {
+    background-color: #ff4444; /* Rojo para Stop */
+    color: white;
+}

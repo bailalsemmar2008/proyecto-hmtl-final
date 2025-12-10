@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Rara Vez",
+    "artist": "Milo J, Taiu",
+    "url": "ruta/a/tu/cancion_milo.mp3"
+  },
+  {
+    "id": 2,
+    "title": "20 Min",
+    "artist": "Lil Uzi Vert",
+    "url": "ruta/a/tu/cancion_uzi.mp3"
+  },
+  {
+    "id": 3,
+    "title": "Lo Que Tiene",
+    "artist": "Morad, Beny Jr, Rvfv",
+    "url": "ruta/a/tu/cancion_morad.mp3"
+  },
+  {
+    "id": 4,
+    "title": "goosebumps",
+    "artist": "Travis Scott",
+    "url": "ruta/a/tu/cancion_travis.mp3"
+  },
+  {
+    "id": 5,
+    "title": "All The Stars",
+    "artist": "Kendrick Lamar, SZA",
+    "url": "ruta/a/tu/cancion_kendrick.mp3"
+  },
+  {
+    "id": 6,
+    "title": "See You Again",
+    "artist": "Tyler, The Creator",
+    "url": "ruta/a/tu/cancion_tyler.mp3"
+  }
+]
