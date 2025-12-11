@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const puzzleBoard = document.getElementById('puzzle-board');
     const statusMsg = document.getElementById('status-msg');
 
-    // --- 1. CONTROL DE ACCESO (Url / Puzzle) ---
+    // --- 1. CONTROL DE ACCESO ---
     const urlParams = new URLSearchParams(window.location.search);
     const isUnlocked = urlParams.get('unlocked');
 
-    // Lista de imágenes para el puzzle (Tu lista personalizada)
+    // Lista de imágenes para el puzzle
     const puzzleImages = [ 
         'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c9a27e0a-52f7-4cec-a932-b6246308a58e/dfg6451-bf8a1a80-3af1-4485-a22a-ce68c40fdc9f.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jOWEyN2UwYS01MmY3LTRjZWMtYTkzMi1iNjI0NjMwOGE1OGUvZGZnNjQ1MS1iZjhhMWE4MC0zYWYxLTQ0ODUtYTIyYS1jZTY4YzQwZmRjOWYuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.4GScQMOAjRf80dZnpzeuFH4cu0cqGf2NfRQjzndROEg', 
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa6h11UfK0kutO4Y97kJ4iwb3yDjn1H-SNAA&s', 
@@ -23,34 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
         'https://i.ytimg.com/vi/nD_7YPIeyw8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDDIApb7uA-gD9NvY8hyMFwjN9u8g'
     ];
 
-    // Verificar si mostramos puzzle o dashboard
     if (isUnlocked === 'true') {
         unlockContent();
     } else {
-        localStorage.removeItem('musicAccess'); // Limpiar caché vieja por si acaso
+        localStorage.removeItem('musicAccess');
         initPuzzle();
     }
 
     function unlockContent() {
         puzzleWrapper.classList.add('hidden');
         rewardWrapper.classList.remove('hidden');
-        
-        // Inicializar los 3 módulos del dashboard
         initMusicPlayer();
         initEmojiSystem();
         initHigherLowerGame();
     }
 
-    // ==========================================================
-    // MÓDULO 1: PUZZLE (Lógica original simplificada)
-    // ==========================================================
+    // --- MÓDULO 1: PUZZLE ---
     function initPuzzle() {
         const size = 3;
         let pieces = [];
         puzzleBoard.innerHTML = '';
-        
-        const randomIndex = Math.floor(Math.random() * puzzleImages.length);
-        const currentImageUrl = puzzleImages[randomIndex];
+        const currentImageUrl = puzzleImages[Math.floor(Math.random() * puzzleImages.length)];
 
         for (let i = 0; i < size * size; i++) pieces.push(i);
         pieces.sort(() => Math.random() - 0.5);
@@ -60,28 +53,22 @@ document.addEventListener('DOMContentLoaded', () => {
             div.classList.add('puzzle-piece');
             div.setAttribute('draggable', 'true');
             div.dataset.index = index; div.dataset.value = val;
-            
             div.style.backgroundImage = `url('${currentImageUrl}')`;
-            
             const col = val % size;
             const row = Math.floor(val / size);
             div.style.backgroundPosition = `${(col / (size - 1)) * 100}% ${(row / (size - 1)) * 100}%`;
-            
-            // Event listeners del drag (resumido para ahorrar espacio, funciona igual)
             addDragEvents(div);
             puzzleBoard.appendChild(div);
         });
     }
 
-    // ... (Mantengo las funciones drag/drop tuyas aquí ocultas para que el código sea limpio, usa las mismas de antes) ...
-    // Funciones Helper del Drag & Drop
+    // Funciones Drag & Drop
     let dragSrcEl = null;
     function addDragEvents(item) {
         item.addEventListener('dragstart', function(e) { dragSrcEl = this; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/html', this.innerHTML); this.classList.add('dragging'); });
         item.addEventListener('dragover', function(e) { if(e.preventDefault) e.preventDefault(); return false; });
         item.addEventListener('drop', function(e) { if(e.stopPropagation) e.stopPropagation(); if(dragSrcEl !== this) { swapPieces(dragSrcEl, this); checkWin(); } return false; });
         item.addEventListener('dragend', function() { this.classList.remove('dragging'); });
-        // Touch events
         item.addEventListener('touchstart', function(e) { dragSrcEl = this; }, {passive: true});
         item.addEventListener('touchend', function(e) { 
             let changedTouch = e.changedTouches[0];
@@ -103,17 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    // ==========================================================
-    // MÓDULO 2: SELECTOR DE EMOJIS FLOTANTES
-    // ==========================================================
+    // --- MÓDULO 2: EMOJIS (Corregido) ---
     function initEmojiSystem() {
         const emojiContainer = document.getElementById('emoji-grid');
-        // Lista generosa de emojis (CORREGIDA: se eliminó "sneezing" y se añadió el emoji)
+        // AQUÍ ESTABA EL ERROR: He quitado "sneezing" y puesto 🤧
         const emojis = ["😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😋","😎","😍","😘","🥰","😗","😙","😚","🙂","🤗","🤩","🤔","🤨","😐","😑","😶","🙄","😏","😣","😥","😮","🤐","😯","😪","😫","😴","😌","😛","😜","😝","🤤","😒","😓","😔","😕","🙃","🤑","😲","☹️","🙁","😖","😞","😟","😤","😢","😭","😦","😧","😨","😩","🤯","😬","😰","😱","🥵","🥶","😳","🤪","😵","😡","😠","🤬","😷","🤒","🤕","🤢","🤮","🤧","😇","🥳","🥺","🤠","🤡","🤥","🤫","🤭","🧐","🤓","😈","👿","👹","👺","💀","👻","👽","🤖","💩","😺","😸","😹","😻","😼","😽","🙀","😿","😾"];
         
         emojiContainer.innerHTML = '';
-        
         emojis.forEach(char => {
             const span = document.createElement('span');
             span.textContent = char;
@@ -128,46 +111,24 @@ document.addEventListener('DOMContentLoaded', () => {
         el.textContent = char;
         el.classList.add('floating-emoji');
         document.body.appendChild(el);
-
-        // Posición inicial aleatoria
         let x = Math.random() * (window.innerWidth - 50);
         let y = Math.random() * (window.innerHeight - 50);
-        
-        // Velocidad aleatoria
-        let vx = (Math.random() - 0.5) * 10; // Velocidad X
-        let vy = (Math.random() - 0.5) * 10; // Velocidad Y
+        let vx = (Math.random() - 0.5) * 10;
+        let vy = (Math.random() - 0.5) * 10;
+        el.style.left = x + 'px'; el.style.top = y + 'px';
 
-        el.style.left = x + 'px';
-        el.style.top = y + 'px';
-
-        // Animación de rebote
         function animate() {
-            // Actualizar posición
-            x += vx;
-            y += vy;
-
-            // Detectar bordes y rebotar
+            x += vx; y += vy;
             if (x <= 0 || x >= window.innerWidth - 50) vx *= -1;
             if (y <= 0 || y >= window.innerHeight - 50) vy *= -1;
-
-            el.style.left = x + 'px';
-            el.style.top = y + 'px';
-
-            // Si el elemento sigue en el DOM, continuar animación
-            if (document.body.contains(el)) {
-                requestAnimationFrame(animate);
-            }
+            el.style.left = x + 'px'; el.style.top = y + 'px';
+            if (document.body.contains(el)) requestAnimationFrame(animate);
         }
         animate();
-
-        // Eliminar después de 15 segundos para no saturar la PC
         setTimeout(() => el.remove(), 15000);
     }
 
-
-    // ==========================================================
-    // MÓDULO 3: MÚSICA (Tu lista personalizada)
-    // ==========================================================
+    // --- MÓDULO 3: MÚSICA ---
     function initMusicPlayer() {
         const container = document.getElementById('player-container');
         const songsData = [
@@ -190,14 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(div);
         });
 
-        // Lógica del reproductor
         const audioPlayer = document.getElementById('audio-player');
         let currentBtn = null;
-        
         audioPlayer.addEventListener('ended', () => {
             if (currentBtn) { currentBtn.textContent = "▶"; currentBtn.classList.remove('playing'); currentBtn = null; }
         });
-
         document.querySelectorAll('.play-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const url = e.target.dataset.url;
@@ -206,129 +164,118 @@ document.addEventListener('DOMContentLoaded', () => {
                     else { audioPlayer.pause(); e.target.textContent = "▶"; e.target.classList.remove('playing'); }
                 } else {
                     if (currentBtn) { currentBtn.textContent = "▶"; currentBtn.classList.remove('playing'); }
-                    audioPlayer.src = url; audioPlayer.play();
-                    e.target.textContent = "II"; e.target.classList.add('playing');
-                    currentBtn = e.target;
+                    audioPlayer.src = url; audioPlayer.play(); e.target.textContent = "II"; e.target.classList.add('playing'); currentBtn = e.target;
                 }
             });
         });
     }
 
+    // --- MÓDULO 4: HIGHER OR LOWER ---
+    // --- JUEGO HIGHER OR LOWER (ARREGLADO) ---
+function initHigherLowerGame() {
+    // Datos de ejemplo
+    const data = [
+        { name: "Travis Scott", val: 55000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKpVo_NEQ875K0ZEpFNAlme6r780XGtT8Zg&s" },
+        { name: "The Rock", val: 8000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTulYq9zMObsZf-ZKa3PFvJUyw5NQcSicZQPQ&s" },
+        { name: "Milo J", val: 18000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa6h11UfK0kutO4Y97kJ4iwb3yDjn1H-SNAA&s" },
+        { name: "Taylor Swift", val: 100000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbwOGolbycEAqRi2LSV_rL_0KslOpkukRpFQ&s" },
+        { name: "Bad Bunny", val: 65000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-5oQiwIaJDM53rFmzFLUF6YDRjBt5SK-R1g&s" }
+    ];
 
-    // ==========================================================
-    // MÓDULO 4: HIGHER OR LOWER (Juego)
-    // ==========================================================
-    function initHigherLowerGame() {
-        // Base de datos de artistas (Valores ficticios aproximados a búsquedas/streams mensuales)
-        const hlData = [
-            { name: "Travis Scott", val: 55000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKpVo_NEQ875K0ZEpFNAlme6r780XGtT8Zg&s" },
-            { name: "The Rock", val: 8000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTulYq9zMObsZf-ZKa3PFvJUyw5NQcSicZQPQ&s" },
-            { name: "Milo J", val: 18000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa6h11UfK0kutO4Y97kJ4iwb3yDjn1H-SNAA&s" },
-            { name: "Taylor Swift", val: 100000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbwOGolbycEAqRi2LSV_rL_0KslOpkukRpFQ&s" },
-            { name: "Lionel Messi", val: 60000000, img: "https://i.ytimg.com/vi/nD_7YPIeyw8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDDIApb7uA-gD9NvY8hyMFwjN9u8g" },
-            { name: "IShowSpeed", val: 15000000, img: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c9a27e0a-52f7-4cec-a932-b6246308a58e/dfg6451-bf8a1a80-3af1-4485-a22a-ce68c40fdc9f.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jOWEyN2UwYS01MmY3LTRjZWMtYTkzMi1iNjI0NjMwOGE1OGUvZGZnNjQ1MS1iZjhhMWE4MC0zYWYxLTQ0ODUtYTIyYS1jZTY4YzQwZmRjOWYuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.4GScQMOAjRf80dZnpzeuFH4cu0cqGf2NfRQjzndROEg" },
-            { name: "Bad Bunny", val: 65000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-5oQiwIaJDM53rFmzFLUF6YDRjBt5SK-R1g&s" },
-            { name: "Minecraft", val: 40000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxkrggw9rn6fAlFXP65XSVm5lTeeMl-5kmrQ&s" }
-        ];
+    // Referencias al DOM (usamos IDs únicos para no fallar)
+    const menuLayer = document.getElementById('hl-menu-layer');
+    const endLayer = document.getElementById('hl-end-layer');
+    const gameLayer = document.getElementById('hl-gameplay-layer');
+    
+    // Botones principales
+    const btnPlay = document.getElementById('hl-btn-play');
+    const btnRetry = document.getElementById('hl-btn-retry');
+    const btnHigher = document.getElementById('btn-higher');
+    const btnLower = document.getElementById('btn-lower');
 
-        // Elementos DOM
-        const startScreen = document.getElementById('hl-start-screen');
-        const gameplay = document.getElementById('hl-gameplay');
-        const gameOver = document.getElementById('hl-game-over');
+    // Elementos de UI
+    const img1 = document.getElementById('hl-img-1');
+    const name1 = document.getElementById('hl-name-1');
+    const val1 = document.getElementById('hl-val-1');
+    
+    const img2 = document.getElementById('hl-img-2');
+    const name2 = document.getElementById('hl-name-2');
+    
+    const scoreDisplay = document.getElementById('hl-current-score');
+    const finalScoreDisplay = document.getElementById('hl-final-score');
+
+    let currentItem, nextItem, score = 0;
+
+    // --- EVENT LISTENERS ---
+    // Usamos onclick directo para asegurar compatibilidad móvil
+    if(btnPlay) btnPlay.onclick = startGame;
+    if(btnRetry) btnRetry.onclick = startGame;
+    
+    if(btnHigher) btnHigher.onclick = function() { checkGuess(true); };
+    if(btnLower) btnLower.onclick = function() { checkGuess(false); };
+
+    function startGame() {
+        score = 0;
+        updateScore();
         
-        // Elementos Dinámicos
-        const leftImg = document.getElementById('hl-img-1');
-        const leftName = document.getElementById('hl-name-1');
-        const leftVal = document.getElementById('hl-val-1');
-        
-        const rightImg = document.getElementById('hl-img-2');
-        const rightName = document.getElementById('hl-name-2');
-        const rightRef = document.getElementById('hl-ref-name');
-        
-        const roundDisp = document.getElementById('hl-round');
-        const scoreDisp = document.getElementById('hl-score');
+        // Ocultar menús, mostrar juego
+        menuLayer.classList.remove('active'); menuLayer.classList.add('hidden');
+        endLayer.classList.remove('active'); endLayer.classList.add('hidden');
+        gameLayer.classList.remove('hidden');
 
-        let round = 0;
-        let score = 0;
-        let currentItem = null;
-        let nextItem = null;
-        const maxRounds = 5;
+        // Primer item
+        currentItem = data[Math.floor(Math.random() * data.length)];
+        loadNextRound();
+    }
 
-        // Botones
-        document.getElementById('hl-start-btn').addEventListener('click', startGame);
-        document.getElementById('hl-restart-btn').addEventListener('click', startGame);
-        document.getElementById('btn-higher').addEventListener('click', () => makeGuess('higher'));
-        document.getElementById('btn-lower').addEventListener('click', () => makeGuess('lower'));
+    function loadNextRound() {
+        // Elegir siguiente distinto al actual
+        do {
+            nextItem = data[Math.floor(Math.random() * data.length)];
+        } while (nextItem.name === currentItem.name);
 
-        function startGame() {
-            round = 1;
-            score = 0;
-            startScreen.classList.add('hidden');
-            gameOver.classList.add('hidden');
-            gameplay.classList.remove('hidden');
+        // Renderizar Izquierda (Base)
+        img1.src = currentItem.img;
+        name1.innerText = currentItem.name;
+        val1.innerText = currentItem.val.toLocaleString();
+
+        // Renderizar Derecha (Incógnita)
+        img2.src = nextItem.img;
+        name2.innerText = nextItem.name;
+    }
+
+    function checkGuess(isHigher) {
+        // Lógica de ganar/perder
+        let correct = false;
+        if (isHigher && nextItem.val >= currentItem.val) correct = true;
+        if (!isHigher && nextItem.val <= currentItem.val) correct = true;
+
+        if (correct) {
+            score++;
+            updateScore();
+            alert(`¡CORRECTO!\n${nextItem.name} tiene ${nextItem.val.toLocaleString()}`);
             
-            // Elegir primer item al azar
-            currentItem = hlData[Math.floor(Math.random() * hlData.length)];
+            // Pasar el siguiente al actual
+            currentItem = nextItem;
             loadNextRound();
-        }
-
-        function loadNextRound() {
-            // Actualizar UI Score
-            scoreDisp.textContent = score;
-            roundDisp.textContent = round;
-
-            // Elegir siguiente item (diferente al actual)
-            do {
-                nextItem = hlData[Math.floor(Math.random() * hlData.length)];
-            } while (nextItem.name === currentItem.name);
-
-            // Renderizar Izquierda (Base)
-            leftImg.src = currentItem.img;
-            leftName.textContent = currentItem.name;
-            leftVal.textContent = currentItem.val.toLocaleString();
-
-            // Renderizar Derecha (Incógnita)
-            rightImg.src = nextItem.img;
-            rightName.textContent = nextItem.name;
-            rightRef.textContent = currentItem.name;
-        }
-
-        function makeGuess(choice) {
-            let isCorrect = false;
-            
-            if (choice === 'higher' && nextItem.val >= currentItem.val) isCorrect = true;
-            else if (choice === 'lower' && nextItem.val <= currentItem.val) isCorrect = true;
-
-            if (isCorrect) {
-                score++;
-                // Animación visual rápida (opcional)
-                alert("¡CORRECTO! " + nextItem.name + " tiene " + nextItem.val.toLocaleString());
-            } else {
-                alert("FALLASTE... " + nextItem.name + " tiene " + nextItem.val.toLocaleString());
-            }
-
-            // Preparar siguiente turno
-            round++;
-            if (round > maxRounds) {
-                endGame();
-            } else {
-                // El ítem de la derecha pasa a ser el de la izquierda
-                currentItem = nextItem;
-                loadNextRound();
-            }
-        }
-
-        function endGame() {
-            gameplay.classList.add('hidden');
-            gameOver.classList.remove('hidden');
-            document.getElementById('hl-final-score').textContent = score;
-            
-            let msg = "¡Buen intento!";
-            if(score === 5) msg = "¡PERFECTO!";
-            else if(score >= 3) msg = "¡Bien hecho!";
-            else msg = "Más suerte la próxima...";
-            
-            document.getElementById('hl-result-msg').textContent = msg;
+        } else {
+            alert(`FALLASTE.\n${nextItem.name} tenía ${nextItem.val.toLocaleString()}`);
+            gameOver();
         }
     }
+
+    function gameOver() {
+        gameLayer.classList.add('hidden');
+        endLayer.classList.remove('hidden'); endLayer.classList.add('active');
+        finalScoreDisplay.innerText = score;
+    }
+
+    function updateScore() {
+        if(scoreDisplay) scoreDisplay.innerText = score;
+    }
+}
+
+// IMPORTANTE: Llamar a esta función cuando se desbloquee el contenido
+// Busca en tu script donde tienes "unlockContent" y añade esta línea:
+// initHigherLowerGame();
 });

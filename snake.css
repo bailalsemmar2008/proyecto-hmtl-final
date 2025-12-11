@@ -14,49 +14,48 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    overflow: hidden; /* Evita scroll mientras juegas */
+    overflow: hidden; /* Importante para que no se mueva la pantalla al jugar */
 }
 
 .game-container {
     text-align: center;
     position: relative;
-    width: 95%; /* Ocupa casi todo el ancho */
-    max-width: 400px; /* Pero no te pases de 400px */
-    padding: 10px;
+    width: 95%; /* Ocupa el 95% del ancho del móvil */
+    max-width: 450px; /* Pero no más de 450px en PC */
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* CANVAS RESPONSIVE */
+/* TABLERO RESPONSIVE */
 canvas {
     background-color: #000;
     border: 2px solid var(--accent);
     box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
     display: block;
-    margin: 0 auto;
     
-    /* Esto hace la magia responsive: */
-    width: 100%; 
-    height: auto;
-    aspect-ratio: 1/1; /* Mantiene la forma cuadrada siempre */
-    max-width: 300px; /* Tamaño máximo original */
+    /* ESTO ES LO QUE LO HACE RESPONSIVE: */
+    width: 100% !important;  /* Ocupa todo el ancho del contenedor */
+    height: auto !important; /* La altura se calcula sola */
+    aspect-ratio: 1 / 1;     /* Mantiene proporción cuadrada siempre */
+    max-width: 400px;
 }
 
-.score-board {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #b3b3b3;
-}
+.header { width: 100%; margin-bottom: 10px; }
+.score-board { font-size: 1.2rem; color: #b3b3b3; }
 
-/* PANTALLAS SUPERPUESTAS (Menú, Win, Lose) */
+/* PANTALLAS SUPERPUESTAS (MENU / WIN / LOSE) */
 .overlay-screen {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.95);
     
-    /* Ajuste para cubrir el canvas perfectamente */
+    /* Mismo tamaño que el canvas para taparlo bien */
     width: 100%; 
-    max-width: 304px; /* Ancho del canvas + bordes */
-    aspect-ratio: 1/1;
+    max-width: 404px; /* Canvas + bordes */
+    aspect-ratio: 1/1; 
     
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
@@ -76,16 +75,15 @@ canvas {
     text-shadow: 0 0 20px var(--error) !important;
     animation: none;
 }
-
 @keyframes rainbow-glow {
-    0% { color: #ff0000; text-shadow: 0 0 10px #ff0000; transform: scale(1); }
-    50% { color: #1db954; text-shadow: 0 0 30px #1db954; transform: scale(1.1); }
-    100% { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; transform: scale(1); }
+    0% { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
+    50% { color: #1db954; text-shadow: 0 0 30px #1db954; }
+    100% { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
 }
 
 /* BOTONES */
 .menu-btn {
-    width: 85%; padding: 12px; margin: 8px 0;
+    width: 80%; padding: 12px; margin: 8px 0;
     border: 2px solid var(--accent); background: transparent;
     color: var(--accent); font-size: 1rem; font-weight: bold;
     border-radius: 30px; cursor: pointer; transition: 0.2s;
@@ -93,7 +91,7 @@ canvas {
 .menu-btn:hover { background: var(--accent); color: black; }
 
 .back-btn, .retry-btn {
-    margin-top: 10px; padding: 8px 15px; border: none; border-radius: 25px;
+    margin-top: 10px; padding: 10px 20px; border: none; border-radius: 25px;
     font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;
 }
 .back-btn { background-color: var(--accent); color: black; font-size: 0.9rem; }
@@ -102,15 +100,17 @@ canvas {
 /* CONTROLES MÓVIL */
 .controls {
     margin-top: 15px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    width: 100%;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
 }
 .controls button {
     background: #333; border: none; color: white;
-    width: 55px; height: 55px; border-radius: 12px;
+    width: 60px; height: 60px; border-radius: 15px;
     font-size: 1.5rem; cursor: pointer;
-    touch-action: manipulation; /* Respuesta rápida al toque */
+    touch-action: manipulation; /* Evita zoom al tocar rápido */
+    box-shadow: 0 4px 0 #000;
 }
-.controls button:active { background: var(--accent); }
+.controls button:active { background: var(--accent); box-shadow: 0 2px 0 #000; transform: translateY(2px); }
 .horizontal-controls { display: flex; gap: 60px; }
 
 /* Ocultar controles en PC */
