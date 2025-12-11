@@ -1,7 +1,7 @@
 :root {
     --bg-color: #0d0d0d;
     --card-bg: #181818;
-    --accent: #1db954; /* Verde */
+    --accent: #1db954;
     --text: #ffffff;
     --red: #ff4444;
 }
@@ -12,15 +12,15 @@ body {
     color: var(--text);
     margin: 0;
     min-height: 100vh;
-    overflow-x: hidden; /* Para que los emojis no ensanchen la pantalla */
+    overflow-x: hidden;
 }
 
 /* --- LAYOUT GENERAL --- */
 .container {
     max-width: 500px;
-    margin: 50px auto;
+    margin: 30px auto;
     text-align: center;
-    padding: 0 20px; /* Añadido padding lateral */
+    padding: 0 15px;
 }
 
 .dashboard-container {
@@ -32,7 +32,8 @@ body {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    align-items: start;
+    align-items: flex-start;
+    box-sizing: border-box;
 }
 
 .card {
@@ -41,14 +42,32 @@ body {
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     flex: 1;
-    min-width: 300px; /* Ancho mínimo de cada columna */
+    min-width: 300px;
     max-width: 400px;
     text-align: center;
-    box-sizing: border-box; /* Importante para el responsive */
+    box-sizing: border-box;
 }
 
 .hidden { display: none !important; }
 .green-text { color: var(--accent); margin-bottom: 20px; text-transform: uppercase; font-size: 1.2rem; }
+
+/* --- PUZZLE RESPONSIVE --- */
+#puzzle-board {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1/1;
+    margin: 0 auto 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1px;
+    border: 2px solid var(--accent);
+}
+.puzzle-piece {
+    width: 100%; height: 100%;
+    background-repeat: no-repeat; cursor: grab;
+    background-size: 300% 300%;
+}
 
 /* --- COLUMNA 1: EMOJIS --- */
 .emoji-grid {
@@ -64,186 +83,94 @@ body {
 
 .emoji-btn {
     transition: transform 0.2s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: flex; justify-content: center; align-items: center;
 }
 .emoji-btn:hover { transform: scale(1.4); }
 
-/* Emojis flotantes (generados por JS) */
 .floating-emoji {
-    position: fixed;
-    font-size: 3rem;
-    pointer-events: none; /* Click through */
-    z-index: 1000;
-    user-select: none;
+    position: fixed; font-size: 3rem; pointer-events: none; z-index: 1000;
 }
 
 /* --- COLUMNA 2: MÚSICA --- */
 .song-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    border-bottom: 1px solid #333;
-    transition: background 0.2s;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px; border-bottom: 1px solid #333;
 }
-.song-item:hover { background-color: #2a2a2a; }
-.song-info { text-align: left; }
-.song-title { font-weight: bold; display: block; font-size: 0.95rem;}
-.song-artist { font-size: 0.8em; color: #999; }
-
+.song-title { font-weight: bold; display: block; font-size: 0.95rem; text-align: left;}
+.song-artist { font-size: 0.8em; color: #999; text-align: left; display: block;}
 .play-btn {
-    background-color: var(--accent);
-    border: none;
-    width: 35px; height: 35px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    background-color: var(--accent); border: none; width: 35px; height: 35px;
+    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; /* Evita que el botón se aplaste */
 }
 .play-btn.playing { background-color: var(--red); color: white; }
 
 .snake-link-container { margin-top: 25px; border-top: 1px solid #333; padding-top: 15px; }
 .snake-btn {
-    display: inline-block;
-    border: 2px solid var(--accent);
-    color: var(--accent);
-    padding: 10px 20px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
+    display: inline-block; border: 2px solid var(--accent); color: var(--accent);
+    padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold;
 }
-.snake-btn:hover { background-color: var(--accent); color: black; }
 
-/* --- COLUMNA 3: HIGHER OR LOWER --- */
+/* --- COLUMNA 3: HIGHER OR LOWER (RESPONSIVE) --- */
 #hl-game-container {
-    background-color: #000;
-    border-radius: 15px;
-    overflow: hidden;
-    position: relative;
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    background-color: #000; border-radius: 15px; overflow: hidden;
+    position: relative; min-height: 300px; display: flex; flex-direction: column;
 }
 
 .hl-split {
-    display: flex;
-    height: 250px;
-    position: relative;
+    display: flex; height: 250px; position: relative; width: 100%;
 }
 
 .hl-side {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
+    flex: 1; position: relative; overflow: hidden;
 }
 
 .hl-side img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.6;
+    width: 100%; height: 100%; object-fit: cover; opacity: 0.6;
 }
 
 .hl-info, .hl-overlay {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    z-index: 2;
-    text-shadow: 2px 2px 4px #000;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 100%; z-index: 2; text-shadow: 2px 2px 4px #000; pointer-events: none;
 }
+.hl-overlay button { pointer-events: auto; } /* Reactivar clicks en botones */
 
 .hl-vs {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px; height: 40px;
-    background: white;
-    color: black;
-    border-radius: 50%;
-    font-weight: bold;
-    display: flex; align-items: center; justify-content: center;
-    z-index: 10;
-    border: 2px solid var(--bg-color);
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 40px; height: 40px; background: white; color: black; border-radius: 50%;
+    font-weight: bold; display: flex; align-items: center; justify-content: center;
+    z-index: 10; border: 2px solid var(--bg-color);
 }
 
 .hl-score { font-size: 1.5rem; color: #ffd700; font-weight: bold; }
 
 .hl-choice-btn {
-    display: block;
-    width: 80%;
-    margin: 5px auto;
-    padding: 8px;
-    border: 1px solid white;
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: 0.2s;
+    display: block; width: 80%; margin: 5px auto; padding: 10px;
+    border: 1px solid white; background: rgba(0,0,0,0.6); color: white;
+    border-radius: 20px; cursor: pointer; font-weight: bold;
 }
-.hl-choice-btn:hover { background: white; color: black; }
 
 .hl-status { padding: 10px; background: #222; font-size: 0.9rem; }
 .hl-btn {
-    background: var(--accent);
-    border: none;
-    padding: 10px 30px;
-    border-radius: 25px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
+    background: var(--accent); border: none; padding: 10px 30px;
+    border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 10px;
 }
 
-/* ESTILOS DEL PUZZLE (MANTENIDOS) */
-#puzzle-board {
-    width: 100%; max-width: 400px; aspect-ratio: 1/1;
-    margin: 0 auto 20px; display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 1px;
-    border: 2px solid var(--accent);
-}
-.puzzle-piece {
-    width: 100%; height: 100%;
-    background-repeat: no-repeat; cursor: grab;
-    background-size: 300% 300%; /* Forzamos tamaño */
+/* --- MEDIA QUERIES (MÓVIL) --- */
+@media (max-width: 900px) {
+    .dashboard-container { flex-direction: column; align-items: center; }
+    .card { width: 100%; max-width: 500px; }
 }
 
-/* --- MEDIA QUERIES PARA RESPONSIVE --- */
-@media (max-width: 1100px) {
-    .dashboard-container {
-        /* En pantallas medianas, las tarjetas se apilan si no caben */
-        justify-content: center;
-    }
-    .card {
-        /* Permite que las tarjetas ocupen más ancho si están solas en una fila */
-        max-width: 600px; 
-    }
-}
-
-@media (max-width: 768px) {
-    .dashboard-container {
-        /* En móviles, las tarjetas se apilan verticalmente */
-        flex-direction: column;
-        align-items: center;
-    }
-    .card {
-        width: 100%; /* Ocupan todo el ancho disponible */
-        max-width: none; /* Quita el límite de ancho */
-        min-width: 0; /* Permite que se encojan si es necesario */
-    }
+@media (max-width: 600px) {
+    /* Ajustes Emojis */
+    .emoji-grid { grid-template-columns: repeat(6, 1fr); font-size: 1.8rem; }
     
-    /* Ajustes para la tarjeta de emojis en móvil */
-    .emoji-title {
-        font-size: 1rem; /* Título más pequeño */
-    }
-    .emoji-grid {
-        /* Menos columnas para que los emojis sean más fáciles de tocar */
-        grid-template-columns: repeat(6, 1fr); 
-        font-size: 1.8rem; /* Emojis más grandes */
-        gap: 8px;
-    }
+    /* Higher/Lower Vertical */
+    .hl-split { flex-direction: column; height: auto; }
+    .hl-side { height: 200px; width: 100%; } /* Imágenes apiladas */
+    .hl-vs { top: 50%; left: 50%; transform: translate(-50%, -50%); } /* Sigue centrado */
+    
+    /* Música */
+    .song-item { padding: 10px 5px; }
 }

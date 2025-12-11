@@ -14,22 +14,30 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    overflow: hidden;
+    overflow: hidden; /* Evita scroll mientras juegas */
 }
 
 .game-container {
     text-align: center;
     position: relative;
-    width: 100%;
-    max-width: 400px;
+    width: 95%; /* Ocupa casi todo el ancho */
+    max-width: 400px; /* Pero no te pases de 400px */
+    padding: 10px;
 }
 
+/* CANVAS RESPONSIVE */
 canvas {
     background-color: #000;
     border: 2px solid var(--accent);
     box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
     display: block;
     margin: 0 auto;
+    
+    /* Esto hace la magia responsive: */
+    width: 100%; 
+    height: auto;
+    aspect-ratio: 1/1; /* Mantiene la forma cuadrada siempre */
+    max-width: 300px; /* Tamaño máximo original */
 }
 
 .score-board {
@@ -38,24 +46,29 @@ canvas {
     color: #b3b3b3;
 }
 
-/* CLASE COMÚN PARA TODAS LAS PANTALLAS SUPERPUESTAS */
+/* PANTALLAS SUPERPUESTAS (Menú, Win, Lose) */
 .overlay-screen {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.95);
-    width: 100%; height: 100%;
+    
+    /* Ajuste para cubrir el canvas perfectamente */
+    width: 100%; 
+    max-width: 304px; /* Ancho del canvas + bordes */
+    aspect-ratio: 1/1;
+    
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
     z-index: 20;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .hidden { display: none !important; }
 
-/* TEXTOS Y ANIMACIONES */
+/* TEXTOS */
 .glow-text {
-    font-size: 3rem; font-weight: bold; text-transform: uppercase;
+    font-size: 2.5rem; font-weight: bold; text-transform: uppercase;
     animation: rainbow-glow 2s infinite alternate;
 }
 .error-text {
@@ -72,38 +85,33 @@ canvas {
 
 /* BOTONES */
 .menu-btn {
-    width: 80%;
-    padding: 15px;
-    margin: 10px 0;
-    border: 2px solid var(--accent);
-    background: transparent;
-    color: var(--accent);
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: 0.2s;
+    width: 85%; padding: 12px; margin: 8px 0;
+    border: 2px solid var(--accent); background: transparent;
+    color: var(--accent); font-size: 1rem; font-weight: bold;
+    border-radius: 30px; cursor: pointer; transition: 0.2s;
 }
 .menu-btn:hover { background: var(--accent); color: black; }
 
 .back-btn, .retry-btn {
-    margin-top: 15px; padding: 10px 20px;
-    border: none; border-radius: 25px;
-    font-weight: bold; cursor: pointer; text-decoration: none;
-    display: inline-block;
+    margin-top: 10px; padding: 8px 15px; border: none; border-radius: 25px;
+    font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;
 }
-.back-btn { background-color: var(--accent); color: black; font-size: 1rem; }
-.retry-btn {
-    background-color: transparent; border: 1px solid #fff; color: #fff; margin: 5px;
-}
-.retry-btn:hover { background-color: rgba(255,255,255,0.1); }
+.back-btn { background-color: var(--accent); color: black; font-size: 0.9rem; }
+.retry-btn { background-color: transparent; border: 1px solid #fff; color: #fff; margin: 5px; }
 
 /* CONTROLES MÓVIL */
-.controls { margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.controls {
+    margin-top: 15px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
 .controls button {
     background: #333; border: none; color: white;
-    width: 50px; height: 50px; border-radius: 10px;
-    font-size: 1.2rem; cursor: pointer;
+    width: 55px; height: 55px; border-radius: 12px;
+    font-size: 1.5rem; cursor: pointer;
+    touch-action: manipulation; /* Respuesta rápida al toque */
 }
-.horizontal-controls { display: flex; gap: 50px; }
+.controls button:active { background: var(--accent); }
+.horizontal-controls { display: flex; gap: 60px; }
+
+/* Ocultar controles en PC */
 @media (min-width: 768px) { .controls { display: none; } }
