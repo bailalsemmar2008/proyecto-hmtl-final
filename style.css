@@ -1,163 +1,249 @@
 :root {
-    --bg-color: #121212;
-    --card-bg: #1e1e1e;
-    --accent: #1db954;
+    --bg-color: #0d0d0d;
+    --card-bg: #181818;
+    --accent: #1db954; /* Verde */
     --text: #ffffff;
-}
-
-* {
-    box-sizing: border-box; /* Importante para que los bordes no rompan el tamaño */
+    --red: #ff4444;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-color);
     color: var(--text);
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden; /* Para que los emojis no ensanchen la pantalla */
+}
+
+/* --- LAYOUT GENERAL --- */
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    text-align: center;
+    padding: 0 20px; /* Añadido padding lateral */
+}
+
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: start;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    flex: 1;
+    min-width: 300px; /* Ancho mínimo de cada columna */
+    max-width: 400px;
+    text-align: center;
+    box-sizing: border-box; /* Importante para el responsive */
+}
+
+.hidden { display: none !important; }
+.green-text { color: var(--accent); margin-bottom: 20px; text-transform: uppercase; font-size: 1.2rem; }
+
+/* --- COLUMNA 1: EMOJIS --- */
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: #222;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.emoji-btn {
+    transition: transform 0.2s;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px; /* Espacio alrededor en móviles */
+}
+.emoji-btn:hover { transform: scale(1.4); }
+
+/* Emojis flotantes (generados por JS) */
+.floating-emoji {
+    position: fixed;
+    font-size: 3rem;
+    pointer-events: none; /* Click through */
+    z-index: 1000;
+    user-select: none;
 }
 
-.container {
-    text-align: center;
-    width: 100%;
-    max-width: 500px; /* Ancho máximo en escritorio */
-    background-color: var(--card-bg); /* Fondo de tarjeta para mejor contraste */
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.hidden {
-    display: none !important;
-}
-
-h1 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--accent);
-}
-
-p {
-    color: #b3b3b3;
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-}
-
-/* ESTILOS DEL PUZZLE RESPONSIVE */
-/* ... Mantenemos el resto del CSS igual (body, container, etc) ... */
-
-/* CAMBIOS EN EL PUZZLE */
-#puzzle-board {
-    width: 100%;
-    max-width: 400px;
-    aspect-ratio: 1 / 1; /* Fuerza a que sea cuadrado */
-    margin: 0 auto 20px auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    border: 2px solid var(--accent);
-    box-shadow: 0 0 15px rgba(29, 185, 84, 0.2);
-    background-color: #000;
-    gap: 1px; /* Opcional: crea una línea finita entre piezas para que se vea mejor */
-}
-
-.puzzle-piece {
-    width: 100%;
-    height: 100%;
-    /* Pon aquí tu imagen cuadrada preferiblemente */
-    background-repeat: no-repeat;
-    cursor: grab;
-    position: relative;
-    touch-action: none;
-    overflow: hidden;
-    /* Añadimos un color de fondo por si la imagen tarda en cargar */
-    background-color: #2a2a2a; 
-}
-
-/* Cuando arrastramos, que se vea claro y por encima de todo */
-.puzzle-piece.dragging {
-    opacity: 0.6;
-    border: 2px solid var(--accent);
-    z-index: 100; 
-    transform: scale(0.95); /* Efecto visual de "levantar" la pieza */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-}
-
-/* ESTILOS DEL REPRODUCTOR */
-#player-container {
-    background-color: #252525;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
+/* --- COLUMNA 2: MÚSICA --- */
 .song-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
+    padding: 12px;
     border-bottom: 1px solid #333;
+    transition: background 0.2s;
 }
-
-.song-info {
-    text-align: left;
-    overflow: hidden; 
-    margin-right: 10px;
-}
-
-.song-title {
-    font-weight: bold;
-    font-size: 1rem;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Puntos suspensivos si el texto es muy largo */
-}
-
-.song-artist {
-    font-size: 0.8em;
-    color: #999;
-}
+.song-item:hover { background-color: #2a2a2a; }
+.song-info { text-align: left; }
+.song-title { font-weight: bold; display: block; font-size: 0.95rem;}
+.song-artist { font-size: 0.8em; color: #999; }
 
 .play-btn {
     background-color: var(--accent);
     border: none;
-    color: black;
-    min-width: 35px; /* Tamaño mínimo para dedos */
-    height: 35px;
+    width: 35px; height: 35px;
     border-radius: 50%;
     cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}
+.play-btn.playing { background-color: var(--red); color: white; }
+
+.snake-link-container { margin-top: 25px; border-top: 1px solid #333; padding-top: 15px; }
+.snake-btn {
+    display: inline-block;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
     font-weight: bold;
+    transition: 0.3s;
+}
+.snake-btn:hover { background-color: var(--accent); color: black; }
+
+/* --- COLUMNA 3: HIGHER OR LOWER --- */
+#hl-game-container {
+    background-color: #000;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    min-height: 300px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
-    font-size: 12px;
-    transition: transform 0.2s;
 }
 
-.play-btn:hover {
-    transform: scale(1.1);
+.hl-split {
+    display: flex;
+    height: 250px;
+    position: relative;
 }
 
-.playing {
-    background-color: #ff4444; /* Rojo para Stop */
+.hl-side {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.hl-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+}
+
+.hl-info, .hl-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    z-index: 2;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.hl-vs {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px; height: 40px;
+    background: white;
+    color: black;
+    border-radius: 50%;
+    font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+    border: 2px solid var(--bg-color);
+}
+
+.hl-score { font-size: 1.5rem; color: #ffd700; font-weight: bold; }
+
+.hl-choice-btn {
+    display: block;
+    width: 80%;
+    margin: 5px auto;
+    padding: 8px;
+    border: 1px solid white;
+    background: rgba(0,0,0,0.5);
     color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.hl-choice-btn:hover { background: white; color: black; }
+
+.hl-status { padding: 10px; background: #222; font-size: 0.9rem; }
+.hl-btn {
+    background: var(--accent);
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
-/* MEDIA QUERIES PARA MÓVILES */
-@media (max-width: 480px) {
-    .container {
-        padding: 1.5rem 1rem;
+/* ESTILOS DEL PUZZLE (MANTENIDOS) */
+#puzzle-board {
+    width: 100%; max-width: 400px; aspect-ratio: 1/1;
+    margin: 0 auto 20px; display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1px;
+    border: 2px solid var(--accent);
+}
+.puzzle-piece {
+    width: 100%; height: 100%;
+    background-repeat: no-repeat; cursor: grab;
+    background-size: 300% 300%; /* Forzamos tamaño */
+}
+
+/* --- MEDIA QUERIES PARA RESPONSIVE --- */
+@media (max-width: 1100px) {
+    .dashboard-container {
+        /* En pantallas medianas, las tarjetas se apilan si no caben */
+        justify-content: center;
+    }
+    .card {
+        /* Permite que las tarjetas ocupen más ancho si están solas en una fila */
+        max-width: 600px; 
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        /* En móviles, las tarjetas se apilan verticalmente */
+        flex-direction: column;
+        align-items: center;
+    }
+    .card {
+        width: 100%; /* Ocupan todo el ancho disponible */
+        max-width: none; /* Quita el límite de ancho */
+        min-width: 0; /* Permite que se encojan si es necesario */
     }
     
-    h1 {
-        font-size: 1.25rem;
+    /* Ajustes para la tarjeta de emojis en móvil */
+    .emoji-title {
+        font-size: 1rem; /* Título más pequeño */
     }
-
-    .song-title {
-        font-size: 0.9rem;
+    .emoji-grid {
+        /* Menos columnas para que los emojis sean más fáciles de tocar */
+        grid-template-columns: repeat(6, 1fr); 
+        font-size: 1.8rem; /* Emojis más grandes */
+        gap: 8px;
     }
 }

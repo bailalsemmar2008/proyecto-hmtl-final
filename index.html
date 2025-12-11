@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desbloquea la Música</title>
+    <title>Dashboard Musical</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,30 +15,73 @@
         <p id="status-msg">Arrastra y suelta las piezas...</p>
     </div>
 
-    <div id="reward-wrapper" class="container hidden">
-        <h1>Recompensa por resolver este puzzle</h1>
+    <div id="reward-wrapper" class="dashboard-container hidden">
         
-        <div id="player-container"></div>
-        
-        <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
-            <p>¿Quieres otro desafío?</p>
-            <a href="snake.html" style="
-                display: inline-block;
-                background-color: transparent;
-                border: 2px solid #1db954;
-                color: #1db954;
-                padding: 10px 20px;
-                text-decoration: none;
-                border-radius: 20px;
-                font-weight: bold;
-                transition: 0.3s;
-            ">
-                🐍 Jugar Snake Challenge
-            </a>
+        <div class="card emoji-panel">
+            <h2 class="green-text emoji-title">Selector de emojis flotantes</h2>
+            <div id="emoji-grid" class="emoji-grid">
+                </div>
         </div>
 
-        <audio id="audio-player"></audio>
+        <div class="card music-panel">
+            <h2 class="green-text">Recompensa por resolver este puzzle</h2>
+            <div id="player-container">
+                </div>
+            
+            <div class="snake-link-container">
+                <p>¿Quieres otro desafío?</p>
+                <a href="snake.html" class="snake-btn">
+                    🐍 Jugar Snake Challenge
+                </a>
+            </div>
+        </div>
+
+        <div class="card game-panel">
+            <h2 class="green-text">Higher <span style="color:white; font-size:0.6em">or</span> <span style="color:#ff4444">Lower</span></h2>
+            
+            <div id="hl-game-container">
+                <div id="hl-start-screen">
+                    <p>Adivina quién tiene más búsquedas mensuales.</p>
+                    <button id="hl-start-btn" class="hl-btn play">JUGAR</button>
+                </div>
+
+                <div id="hl-gameplay" class="hidden">
+                    <div class="hl-split">
+                        <div class="hl-side" id="hl-left">
+                            <img id="hl-img-1" src="" alt="">
+                            <div class="hl-info">
+                                <h3 id="hl-name-1">Artista A</h3>
+                                <p class="hl-score" id="hl-val-1">1,000,000</p>
+                                <span>Búsquedas</span>
+                            </div>
+                        </div>
+
+                        <div class="hl-vs">VS</div>
+
+                        <div class="hl-side" id="hl-right">
+                            <img id="hl-img-2" src="" alt="">
+                            <div class="hl-overlay">
+                                <h3 id="hl-name-2">Artista B</h3>
+                                <p>tiene</p>
+                                <button class="hl-choice-btn" id="btn-higher">Higher ▲</button>
+                                <button class="hl-choice-btn" id="btn-lower">Lower ▼</button>
+                                <p>búsquedas que <span id="hl-ref-name">...</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hl-status">Ronda: <span id="hl-round">1</span>/5 | Score: <span id="hl-score">0</span></div>
+                </div>
+
+                <div id="hl-game-over" class="hidden">
+                    <h2 id="hl-result-msg">¡Terminado!</h2>
+                    <p>Puntuación final: <span id="hl-final-score">0</span>/5</p>
+                    <button id="hl-restart-btn" class="hl-btn">Jugar de nuevo</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <audio id="audio-player"></audio>
 
     <script src="script.js"></script>
 </body>
