@@ -11,107 +11,118 @@ body {
     font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Alineamos arriba para evitar cortes */
     min-height: 100vh;
     margin: 0;
-    overflow: hidden; /* Importante para que no se mueva la pantalla al jugar */
+    overflow-x: hidden;
+    overflow-y: auto; /* IMPORTANTE: Permite bajar para ver los botones */
+    padding-bottom: 50px;
+    padding-top: 20px;
 }
 
 .game-container {
     text-align: center;
     position: relative;
-    width: 95%; /* Ocupa el 95% del ancho del móvil */
-    max-width: 450px; /* Pero no más de 450px en PC */
-    margin: auto;
+    width: 95%;
+    max-width: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* TABLERO RESPONSIVE */
+/* Header */
+.header { margin-bottom: 10px; width: 100%; }
+h2 { margin: 0; color: var(--accent); font-size: 1.8rem; text-shadow: 0 0 10px rgba(29, 185, 84, 0.3); }
+.score-board { font-size: 1.2rem; color: #b3b3b3; margin-top: 5px; }
+
+/* CANVAS (Tablero) */
 canvas {
     background-color: #000;
     border: 2px solid var(--accent);
     box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
     display: block;
-    
-    /* ESTO ES LO QUE LO HACE RESPONSIVE: */
-    width: 100% !important;  /* Ocupa todo el ancho del contenedor */
-    height: auto !important; /* La altura se calcula sola */
-    aspect-ratio: 1 / 1;     /* Mantiene proporción cuadrada siempre */
-    max-width: 400px;
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    aspect-ratio: 1/1; /* Siempre cuadrado */
+    border-radius: 4px;
 }
 
-.header { width: 100%; margin-bottom: 10px; }
-.score-board { font-size: 1.2rem; color: #b3b3b3; }
-
-/* PANTALLAS SUPERPUESTAS (MENU / WIN / LOSE) */
+/* PANTALLAS SUPERPUESTAS (Menú, Win, Lose) */
 .overlay-screen {
     position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.95);
+    /* TRUCO: Lo colocamos fijo arriba para que no tape los botones de abajo */
+    top: 90px; /* Altura aproximada del título */
+    left: 50%;
+    transform: translateX(-50%); /* Centrado horizontal */
     
-    /* Mismo tamaño que el canvas para taparlo bien */
-    width: 100%; 
-    max-width: 404px; /* Canvas + bordes */
-    aspect-ratio: 1/1; 
+    background: rgba(0, 0, 0, 0.95);
+    width: 100%;
+    max-width: 354px; /* Mismo ancho que el canvas */
+    aspect-ratio: 1/1; /* Mismo alto que el canvas */
     
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
     z-index: 20;
-    border-radius: 5px;
+    border-radius: 10px;
+    border: 1px solid #333;
 }
 
 .hidden { display: none !important; }
 
-/* TEXTOS */
+/* Textos */
 .glow-text {
-    font-size: 2.5rem; font-weight: bold; text-transform: uppercase;
+    font-size: 2.2rem; font-weight: bold; text-transform: uppercase;
     animation: rainbow-glow 2s infinite alternate;
+    margin-bottom: 15px;
 }
-.error-text {
-    color: var(--error) !important;
-    text-shadow: 0 0 20px var(--error) !important;
-    animation: none;
-}
+.error-text { color: var(--error) !important; text-shadow: 0 0 20px var(--error) !important; animation: none; }
+
 @keyframes rainbow-glow {
     0% { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
     50% { color: #1db954; text-shadow: 0 0 30px #1db954; }
     100% { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
 }
 
-/* BOTONES */
+/* Botones dentro del juego */
 .menu-btn {
-    width: 80%; padding: 12px; margin: 8px 0;
+    width: 80%; padding: 12px; margin: 5px 0;
     border: 2px solid var(--accent); background: transparent;
     color: var(--accent); font-size: 1rem; font-weight: bold;
-    border-radius: 30px; cursor: pointer; transition: 0.2s;
+    border-radius: 25px; cursor: pointer;
 }
-.menu-btn:hover { background: var(--accent); color: black; }
-
-.back-btn, .retry-btn {
-    margin-top: 10px; padding: 10px 20px; border: none; border-radius: 25px;
-    font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;
+.back-btn { 
+    background-color: var(--accent); color: black; border: none; 
+    padding: 10px 20px; border-radius: 25px; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 10px;
 }
-.back-btn { background-color: var(--accent); color: black; font-size: 0.9rem; }
-.retry-btn { background-color: transparent; border: 1px solid #fff; color: #fff; margin: 5px; }
+.retry-btn { 
+    background-color: transparent; border: 1px solid #fff; color: #fff; 
+    padding: 8px 15px; border-radius: 20px; cursor: pointer; margin-top: 5px;
+}
 
-/* CONTROLES MÓVIL */
+/* CONTROLES TÁCTILES (FLECHAS) */
 .controls {
-    margin-top: 15px;
+    margin-top: 20px; /* Separación del tablero */
     width: 100%;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    display: flex; flex-direction: column; 
+    align-items: center; gap: 10px;
+    padding-bottom: 30px; /* Espacio final para scroll */
 }
-.controls button {
-    background: #333; border: none; color: white;
-    width: 60px; height: 60px; border-radius: 15px;
-    font-size: 1.5rem; cursor: pointer;
-    touch-action: manipulation; /* Evita zoom al tocar rápido */
-    box-shadow: 0 4px 0 #000;
-}
-.controls button:active { background: var(--accent); box-shadow: 0 2px 0 #000; transform: translateY(2px); }
-.horizontal-controls { display: flex; gap: 60px; }
 
-/* Ocultar controles en PC */
-@media (min-width: 768px) { .controls { display: none; } }
+.controls button {
+    background: #222; border: 2px solid #444; color: white;
+    width: 65px; height: 65px; border-radius: 15px;
+    font-size: 1.8rem; cursor: pointer;
+    touch-action: manipulation; box-shadow: 0 5px 0 #000;
+    display: flex; align-items: center; justify-content: center;
+}
+.controls button:active {
+    background: var(--accent); border-color: var(--accent); color: black;
+    transform: translateY(4px); box-shadow: 0 0 0 #000;
+}
+.horizontal-controls { display: flex; gap: 50px; }
+
+/* Ocultar botones solo en PC grande */
+@media (min-width: 1024px) { 
+    .controls { display: none !important; }
+}
