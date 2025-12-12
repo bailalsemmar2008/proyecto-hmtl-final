@@ -2,16 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Snake Challenge</title>
     <link rel="stylesheet" href="snake.css">
 </head>
 <body>
 
     <div class="game-container">
+        
         <div class="header">
             <h2>SNAKE ZONE</h2>
-            <div class="score-board">Puntos: <span id="score">0</span> / 10</div>
+            <div class="score-board">Puntos: <span id="score">0</span> <span id="score-target"></span></div>
         </div>
 
         <canvas id="gameCanvas" width="300" height="300"></canvas>
@@ -25,20 +26,36 @@
             <button id="down-btn">▼</button>
         </div>
 
-        <div id="win-screen" class="hidden">
-            <h1 class="glow-text">¡FELICIDADES!</h1>
-            <p>Has demostrado tu habilidad.</p>
-            <a href="index.html?unlocked=true" class="back-btn">Volver a la Música 🎵</a>
-            <button onclick="location.reload()" class="retry-btn">Jugar otra vez</button>
+        <div id="menu-screen" class="overlay-screen">
+            <h1 class="glow-text" style="font-size: 2.5rem;">SNAKE</h1>
+            <p>Elige tu modo de juego</p>
+            
+            <button id="btn-mode-challenge" class="menu-btn mode-btn">
+                🏆 Desafío (5 Puntos)
+            </button>
+            
+            <button id="btn-mode-infinite" class="menu-btn mode-btn" style="border-color: #00bfff; color: #00bfff;">
+                ♾️ Modo Infinito
+            </button>
+
+            <a href="index.html" class="back-btn" style="margin-top: 30px; font-size: 0.9rem;">🔙 Volver al Dashboard</a>
         </div>
 
-        <div id="game-over-screen" class="hidden">
+        <div id="win-screen" class="overlay-screen hidden">
+            <h1 class="glow-text">¡FELICIDADES!</h1>
+            <p>Reto completado.</p>
+            <a href="index.html?unlocked=true" class="back-btn">🔙 Volver al Dashboard</a>
+            <button id="win-retry-btn" class="retry-btn">Jugar otra vez</button>
+            <button id="win-menu-btn" class="retry-btn">Menú Principal</button>
+        </div>
+
+        <div id="game-over-screen" class="overlay-screen hidden">
             <h1 class="glow-text error-text">¡HAS PERDIDO!</h1>
-            <p>Puntuación final: <span id="final-score">0</span></p>
-            <p style="font-size: 0.8rem; color: #999;">Chocaste contra la pared o contigo mismo.</p>
+            <p>Puntuación: <span id="final-score">0</span></p>
             
-            <a href="index.html?unlocked=true" class="back-btn">Volver a la Música 🎵</a>
-            <button onclick="location.reload()" class="retry-btn">Intentarlo de nuevo</button>
+            <a href="index.html?unlocked=true" class="back-btn">🔙 Volver al Dashboard</a>
+            <button id="lose-retry-btn" class="retry-btn">Intentarlo de nuevo</button>
+            <button id="lose-menu-btn" class="retry-btn">Menú Principal</button>
         </div>
 
     </div>
