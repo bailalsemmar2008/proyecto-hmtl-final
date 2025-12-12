@@ -11,11 +11,11 @@ body {
     font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Alineamos arriba para evitar cortes */
+    align-items: flex-start; /* Alineado arriba */
     min-height: 100vh;
     margin: 0;
     overflow-x: hidden;
-    overflow-y: auto; /* IMPORTANTE: Permite bajar para ver los botones */
+    overflow-y: auto; /* Scroll permitido */
     padding-bottom: 50px;
     padding-top: 20px;
 }
@@ -35,7 +35,7 @@ body {
 h2 { margin: 0; color: var(--accent); font-size: 1.8rem; text-shadow: 0 0 10px rgba(29, 185, 84, 0.3); }
 .score-board { font-size: 1.2rem; color: #b3b3b3; margin-top: 5px; }
 
-/* CANVAS (Tablero) */
+/* CANVAS (ESTILO BASE MÓVIL) */
 canvas {
     background-color: #000;
     border: 2px solid var(--accent);
@@ -44,22 +44,24 @@ canvas {
     width: 100%;
     max-width: 350px;
     height: auto;
-    aspect-ratio: 1/1; /* Siempre cuadrado */
+    aspect-ratio: 1/1;
     border-radius: 4px;
+    /* Para que al escalar en PC se vea pixel art y no borroso */
+    image-rendering: pixelated; 
 }
 
-/* PANTALLAS SUPERPUESTAS (Menú, Win, Lose) */
+/* PANTALLAS SUPERPUESTAS (ESTILO BASE MÓVIL) */
 .overlay-screen {
     position: absolute;
-    /* TRUCO: Lo colocamos fijo arriba para que no tape los botones de abajo */
-    top: 90px; /* Altura aproximada del título */
+    /* En móvil lo subimos para no tapar los botones */
+    top: 90px; 
     left: 50%;
-    transform: translateX(-50%); /* Centrado horizontal */
+    transform: translateX(-50%);
     
     background: rgba(0, 0, 0, 0.95);
     width: 100%;
-    max-width: 354px; /* Mismo ancho que el canvas */
-    aspect-ratio: 1/1; /* Mismo alto que el canvas */
+    max-width: 354px; /* Canvas + bordes */
+    aspect-ratio: 1/1; 
     
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
@@ -72,7 +74,7 @@ canvas {
 
 /* Textos */
 .glow-text {
-    font-size: 2.2rem; font-weight: bold; text-transform: uppercase;
+    font-size: 2.5rem; font-weight: bold; text-transform: uppercase;
     animation: rainbow-glow 2s infinite alternate;
     margin-bottom: 15px;
 }
@@ -84,29 +86,30 @@ canvas {
     100% { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
 }
 
-/* Botones dentro del juego */
+/* Botones Menú */
 .menu-btn {
     width: 80%; padding: 12px; margin: 5px 0;
     border: 2px solid var(--accent); background: transparent;
     color: var(--accent); font-size: 1rem; font-weight: bold;
-    border-radius: 25px; cursor: pointer;
+    border-radius: 25px; cursor: pointer; transition: 0.2s;
 }
-.back-btn { 
-    background-color: var(--accent); color: black; border: none; 
-    padding: 10px 20px; border-radius: 25px; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 10px;
-}
-.retry-btn { 
-    background-color: transparent; border: 1px solid #fff; color: #fff; 
-    padding: 8px 15px; border-radius: 20px; cursor: pointer; margin-top: 5px;
-}
+.menu-btn:hover { background: var(--accent); color: black; }
 
-/* CONTROLES TÁCTILES (FLECHAS) */
+.back-btn, .retry-btn {
+    margin-top: 10px; padding: 10px 20px; border-radius: 25px;
+    font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;
+    border: none; font-size: 0.9rem;
+}
+.back-btn { background-color: var(--accent); color: black; }
+.retry-btn { background-color: transparent; border: 1px solid #fff; color: #fff; margin: 5px; }
+
+/* CONTROLES TÁCTILES (VISIBLE EN MÓVIL) */
 .controls {
-    margin-top: 20px; /* Separación del tablero */
+    margin-top: 20px;
     width: 100%;
     display: flex; flex-direction: column; 
     align-items: center; gap: 10px;
-    padding-bottom: 30px; /* Espacio final para scroll */
+    padding-bottom: 30px;
 }
 
 .controls button {
@@ -122,7 +125,47 @@ canvas {
 }
 .horizontal-controls { display: flex; gap: 50px; }
 
-/* Ocultar botones solo en PC grande */
+
+/* =========================================
+   VERSIÓN PC / PANTALLA GRANDE (+1024px)
+   ========================================= */
 @media (min-width: 1024px) { 
+    
+    body {
+        align-items: center; /* En PC lo centramos verticalmente */
+        overflow: hidden; /* En PC no hace falta scroll */
+    }
+
+    /* 1. Contenedor más grande */
+    .game-container {
+        max-width: 800px;
+        margin-top: 0;
+    }
+
+    /* 2. El tablero crece al doble */
+    canvas {
+        max-width: 600px; 
+        box-shadow: 0 0 40px rgba(29, 185, 84, 0.3);
+    }
+
+    /* 3. Las pantallas también crecen */
+    .overlay-screen {
+        max-width: 604px; /* Coincide con el nuevo tamaño del canvas */
+        
+        /* En PC las centramos perfecto en medio (no hay botones abajo) */
+        top: 55%; 
+        transform: translate(-50%, -50%);
+        padding: 40px;
+    }
+
+    /* 4. Textos gigantes */
+    h2 { font-size: 3.5rem; margin-bottom: 20px; }
+    .score-board { font-size: 2rem; margin-bottom: 20px; }
+    
+    .glow-text { font-size: 4.5rem; margin-bottom: 30px; }
+    .menu-btn { font-size: 1.5rem; padding: 20px; width: 60%; }
+    .back-btn, .retry-btn { font-size: 1.2rem; padding: 15px 30px; }
+    
+    /* 5. ADIÓS CONTROLES TÁCTILES */
     .controls { display: none !important; }
 }

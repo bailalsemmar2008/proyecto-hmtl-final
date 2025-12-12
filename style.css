@@ -90,12 +90,98 @@ body {
 .floating-emoji { position: fixed; font-size: 3rem; pointer-events: none; z-index: 1000; }
 
 /* --- MÚSICA --- */
-.song-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #333; }
-.song-title { font-weight: bold; font-size: 0.9rem; text-align: left; }
-.play-btn { background: var(--accent); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.play-btn.playing { background: var(--red); color: white; }
-.snake-btn { display: block; padding: 12px; margin-top: 15px; border: 2px solid var(--accent); color: var(--accent); border-radius: 20px; text-decoration: none; font-weight: bold; }
 
+.song-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Centra verticalmente el botón de play */
+    padding: 12px 10px; /* Un poco más de espacio */
+    border-bottom: 1px solid #333;
+    background-color: rgba(255, 255, 255, 0.02); /* Sutil fondo */
+    margin-bottom: 5px;
+    border-radius: 8px;
+}
+
+.song-info {
+    display: flex;
+    flex-direction: column; /* <--- ESTO ES LA CLAVE: Uno encima del otro */
+    justify-content: center;
+    text-align: left;
+    overflow: hidden;
+    margin-right: 15px; /* Separación con el botón de play */
+    flex-grow: 1; /* Ocupa todo el espacio posible a la izquierda */
+}
+
+.song-title {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #ffffff;
+    margin-bottom: 4px; /* <--- Espacio entre Título y Artista */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Pone "..." si el texto es muy largo */
+}
+
+.song-artist {
+    font-size: 0.85em;
+    color: #b3b3b3; /* Color grisáceo para diferenciar */
+    font-weight: normal;
+    display: block;
+}
+
+.play-btn {
+    background-color: var(--accent);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Evita que el botón se aplaste */
+    transition: transform 0.2s;
+}
+
+.play-btn:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.play-btn.playing {
+    background-color: var(--red);
+    color: white;
+}
+
+/* --- ESTILO DEL BOTÓN SNAKE (RESTAURADO) --- */
+
+.snake-link-container {
+    margin-top: 25px;
+    border-top: 1px solid #333; /* Línea separadora sutil */
+    padding-top: 20px;
+    text-align: center; /* IMPORTANTE: Centra el botón */
+}
+
+.snake-btn {
+    display: inline-block; /* Para que sea un botón y no una barra entera */
+    background-color: transparent;
+    border: 2px solid var(--accent); /* Borde verde */
+    color: var(--accent); /* Texto verde */
+    padding: 10px 30px; /* Tamaño del botón */
+    border-radius: 50px; /* Bordes muy redondos */
+    text-decoration: none; /* Quitar subrayado */
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.snake-btn:hover {
+    background-color: var(--accent);
+    color: black; /* Texto negro al pasar el ratón */
+    transform: scale(1.05); /* Pequeño efecto de zoom */
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
+}   
 /* ====================================================== */
 /* --- HIGHER OR LOWER: DISEÑO BASE (PC) --- */
 /* ====================================================== */
